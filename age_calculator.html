@@ -1,0 +1,313 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Age Calculator</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: #0f0f0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    padding: 24px;
+  }
+
+  .card {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 20px;
+    padding: 44px 40px;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .card-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 4px;
+    letter-spacing: -0.5px;
+  }
+
+  .card-sub {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 36px;
+  }
+
+  /* Input Group */
+  .input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 8px;
+  }
+
+  .field input {
+    width: 100%;
+    background: #111;
+    border: 1px solid #2a2a2a;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 500;
+    padding: 14px 12px;
+    outline: none;
+    transition: border-color 0.2s;
+    -moz-appearance: textfield;
+    text-align: center;
+  }
+  .field input::-webkit-inner-spin-button,
+  .field input::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .field input::placeholder { color: #333; font-size: 16px; }
+  .field input:focus { border-color: #444; }
+  .field input.error { border-color: #e05252; }
+
+  /* Error */
+  .error-msg {
+    font-size: 12px;
+    color: #e05252;
+    min-height: 18px;
+    margin-bottom: 20px;
+    margin-top: 4px;
+  }
+
+  /* Buttons */
+  .btn-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  button {
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 14px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    font-family: inherit;
+  }
+  button:active { transform: scale(0.98); }
+
+  .btn-calc {
+    background: #ffffff;
+    color: #000;
+  }
+  .btn-calc:hover { opacity: 0.88; }
+
+  .btn-reset {
+    background: #222;
+    color: #888;
+    border: 1px solid #2a2a2a;
+  }
+  .btn-reset:hover { background: #2a2a2a; color: #aaa; }
+
+  /* Result */
+  .result {
+    display: none;
+    border-top: 1px solid #222;
+    padding-top: 28px;
+  }
+
+  .result-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #444;
+    margin-bottom: 18px;
+  }
+
+  .result-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .result-box {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 12px;
+    text-align: center;
+    padding: 20px 12px;
+  }
+
+  .result-num {
+    font-size: 38px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -2px;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .result-unit {
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #555;
+  }
+
+  .result-sentence {
+    font-size: 13px;
+    color: #555;
+    text-align: center;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <p class="card-title">Age Calculator</p>
+  <p class="card-sub">Enter your date of birth to get your exact age</p>
+
+  <div class="input-row">
+    <div class="field">
+      <label>Day</label>
+      <input id="day" type="number" min="1" max="31" placeholder="DD" />
+    </div>
+    <div class="field">
+      <label>Month</label>
+      <input id="month" type="number" min="1" max="12" placeholder="MM" />
+    </div>
+    <div class="field">
+      <label>Year</label>
+      <input id="year" type="number" min="1900" max="2026" placeholder="YYYY" />
+    </div>
+  </div>
+
+  <p class="error-msg" id="error"></p>
+
+  <div class="btn-row">
+    <button class="btn-calc" onclick="calculateAge()">Calculate Age</button>
+    <button class="btn-reset" onclick="resetForm()">Clear</button>
+  </div>
+
+  <div class="result" id="result">
+    <p class="result-label">You are exactly</p>
+    <div class="result-grid">
+      <div class="result-box">
+        <div class="result-num" id="res-y">0</div>
+        <div class="result-unit">Years</div>
+      </div>
+      <div class="result-box">
+        <div class="result-num" id="res-m">0</div>
+        <div class="result-unit">Months</div>
+      </div>
+      <div class="result-box">
+        <div class="result-num" id="res-d">0</div>
+        <div class="result-unit">Days</div>
+      </div>
+    </div>
+    <p class="result-sentence" id="sentence"></p>
+  </div>
+</div>
+
+<script>
+  function calculateAge() {
+    const dayVal   = document.getElementById('day').value.trim();
+    const monthVal = document.getElementById('month').value.trim();
+    const yearVal  = document.getElementById('year').value.trim();
+    const errEl    = document.getElementById('error');
+    const resEl    = document.getElementById('result');
+
+    // Clear previous state
+    errEl.textContent = '';
+    resEl.style.display = 'none';
+    ['day','month','year'].forEach(id => document.getElementById(id).classList.remove('error'));
+
+    // 1. Empty check
+    if (!dayVal || !monthVal || !yearVal) {
+      showError('Please enter a complete date of birth.', !dayVal ? 'day' : !monthVal ? 'month' : 'year');
+      return;
+    }
+
+    const d = parseInt(dayVal);
+    const m = parseInt(monthVal);
+    const y = parseInt(yearVal);
+
+    // 2. Range checks
+    if (m < 1 || m > 12) { showError('Month must be between 1 and 12.', 'month'); return; }
+    if (d < 1 || d > 31) { showError('Day must be between 1 and 31.', 'day');   return; }
+    if (y < 1900 || y > new Date().getFullYear()) { showError('Please enter a valid birth year.', 'year'); return; }
+
+    // 3. Valid calendar date check (catches Feb 30, Apr 31 etc.)
+    const testDate = new Date(y, m - 1, d);
+    if (testDate.getDate() !== d) {
+      showError('Invalid date — e.g. Feb 30 does not exist.', 'day');
+      return;
+    }
+
+    // 4. Future date check
+    const today = new Date();
+    if (testDate > today) {
+      showError('Date of birth cannot be in the future.', 'day');
+      return;
+    }
+
+    // ── Calculation ──
+    let years  = today.getFullYear() - y;
+    let months = today.getMonth()    - (m - 1);
+    let days   = today.getDate()     - d;
+
+    if (days < 0) {
+      months--;
+      // Days in previous month
+      const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+      days += prevMonth.getDate();
+    }
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    // ── Show result ──
+    document.getElementById('res-y').textContent = years;
+    document.getElementById('res-m').textContent = months;
+    document.getElementById('res-d').textContent = days;
+    document.getElementById('sentence').textContent =
+      'You are ' + years + ' Year' + (years !== 1 ? 's' : '') +
+      ', ' + months + ' Month' + (months !== 1 ? 's' : '') +
+      ', and ' + days + ' Day' + (days !== 1 ? 's' : '') + ' old.';
+
+    resEl.style.display = 'block';
+  }
+
+  function showError(msg, fieldId) {
+    document.getElementById('error').textContent = msg;
+    if (fieldId) document.getElementById(fieldId).classList.add('error');
+  }
+
+  function resetForm() {
+    ['day', 'month', 'year'].forEach(id => {
+      const el = document.getElementById(id);
+      el.value = '';
+      el.classList.remove('error');
+    });
+    document.getElementById('error').textContent = '';
+    document.getElementById('result').style.display = 'none';
+  }
+</script>
+
+</body>
+</html>
